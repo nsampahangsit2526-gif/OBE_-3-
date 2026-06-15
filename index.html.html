@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบสร้าง มคอ.3 — สื่อสารการกีฬา มกช.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#13283F; --navy-2:#1d3a5a; --orange:#FF5A2C; --teal:#0FB5A6;
+    --p1:#2F6FED; --p2:#0FB5A6; --p3:#7C5CFF; --p4:#FF7A18;
+    --ink:#1b2733; --muted:#5e7186; --line:#e3e9f0; --bg:#f4f7fb; --card:#ffffff;
+    --shadow:0 1px 3px rgba(19,40,63,.08),0 8px 24px rgba(19,40,63,.06);
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:"Sarabun",sans-serif;font-size:16px;line-height:1.6}
+  h1,h2,h3,h4,.kanit,.num{font-family:"Kanit",sans-serif;font-weight:600}
+  /* ---- Header ---- */
+  header{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-2) 100%);color:#fff;padding:26px 22px;position:relative;overflow:hidden}
+  header::after{content:"";position:absolute;right:-60px;top:-40px;width:240px;height:240px;border-radius:50%;
+    background:radial-gradient(circle at 30% 30%,rgba(255,90,44,.35),transparent 60%)}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+  header .wrap{position:relative;z-index:1;padding:0}
+  .brand-eyebrow{font-family:"Kanit";font-weight:500;letter-spacing:.14em;text-transform:uppercase;font-size:12px;color:#9fc0e6;margin:0 0 6px}
+  header h1{margin:0;font-size:27px;font-weight:700;letter-spacing:.2px}
+  header p{margin:6px 0 0;color:#c7d6e8;font-size:15px}
+  /* ---- Layout ---- */
+  main{max-width:1080px;margin:0 auto;padding:22px 18px 80px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);margin:0 0 18px;overflow:hidden}
+  .card-pad{padding:20px 22px}
+  /* ---- Picker ---- */
+  .picker{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+  .field{flex:1;min-width:240px}
+  label.lab{display:block;font-family:"Kanit";font-weight:500;font-size:13px;color:var(--muted);margin:0 0 6px}
+  select,input,textarea{width:100%;font-family:"Sarabun";font-size:15px;color:var(--ink);
+    border:1.5px solid var(--line);border-radius:10px;padding:11px 13px;background:#fff;transition:border-color .15s}
+  select:focus,input:focus,textarea:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,181,166,.12)}
+  select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235e7186' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;padding-right:38px}
+  /* ---- Empty state ---- */
+  .empty{text-align:center;padding:54px 20px;color:var(--muted)}
+  .empty svg{opacity:.5;margin-bottom:10px}
+  .empty b{font-family:"Kanit";color:var(--navy);font-weight:600;display:block;font-size:18px;margin-bottom:4px}
+  /* ---- Section heads (หมวด) ---- */
+  .sec-head{display:flex;align-items:center;gap:12px;background:#f7fafd;border-bottom:1px solid var(--line);padding:14px 20px}
+  .sec-num{flex:none;width:34px;height:34px;border-radius:9px;background:var(--navy);color:#fff;
+    display:grid;place-items:center;font-family:"Kanit";font-weight:600;font-size:15px}
+  .sec-head h3{margin:0;font-size:16.5px;color:var(--navy)}
+  .sec-head .auto{margin-left:auto;font-family:"Kanit";font-weight:500;font-size:11.5px;letter-spacing:.04em;
+    padding:3px 9px;border-radius:20px;background:rgba(15,181,166,.12);color:#0a8579}
+  .sec-head .fill{background:rgba(255,90,44,.12);color:#d23f17}
+  /* ---- Info grid ---- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border-radius:10px;overflow:hidden;border:1px solid var(--line)}
+  .cell{background:#fff;padding:12px 14px}
+  .cell .k{font-family:"Kanit";font-size:11.5px;color:var(--muted);letter-spacing:.03em;margin-bottom:3px}
+  .cell .v{font-weight:600;color:var(--ink);font-size:15px}
+  .cell .v.big{font-family:"Kanit";font-size:18px;color:var(--navy)}
+  .desc-box{background:#f9fbfd;border:1px solid var(--line);border-left:3px solid var(--teal);border-radius:8px;padding:13px 15px;margin-top:12px;font-size:15px}
+  .desc-box .en{color:var(--muted);font-size:13.5px;margin-top:7px;font-style:italic}
+  /* ---- CLO/PLO ---- */
+  .clo-row{display:flex;gap:13px;align-items:flex-start;padding:13px 0;border-bottom:1px dashed var(--line)}
+  .clo-row:last-child{border-bottom:none}
+  .clo-tag{flex:none;font-family:"Kanit";font-weight:600;font-size:13px;color:#fff;background:var(--navy);
+    border-radius:7px;padding:4px 9px;margin-top:1px;white-space:nowrap}
+  .clo-body{flex:1}
+  .clo-text{font-size:14.5px;margin-bottom:8px}
+  .plo-chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+  .plo-chips .hint{font-family:"Kanit";font-size:11.5px;color:var(--muted);margin-right:2px}
+  .chip{font-family:"Kanit";font-weight:500;font-size:12.5px;padding:4px 10px;border-radius:20px;cursor:pointer;
+    border:1.5px solid transparent;user-select:none;transition:all .12s;background:#eef2f7;color:#90a0b2}
+  .chip[data-on="1"]{color:#fff}
+  .chip.p1[data-on="1"]{background:var(--p1);border-color:var(--p1)}
+  .chip.p2[data-on="1"]{background:var(--p2);border-color:var(--p2)}
+  .chip.p3[data-on="1"]{background:var(--p3);border-color:var(--p3)}
+  .chip.p4[data-on="1"]{background:var(--p4);border-color:var(--p4)}
+  .chip:hover{transform:translateY(-1px)}
+  .plo-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px;padding-top:13px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+  .plo-legend span{display:flex;align-items:center;gap:6px}
+  .dot{width:10px;height:10px;border-radius:50%;flex:none}
+  .dot.p1{background:var(--p1)}.dot.p2{background:var(--p2)}.dot.p3{background:var(--p3)}.dot.p4{background:var(--p4)}
+  /* ---- Weekly table ---- */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+  th{background:var(--navy);color:#fff;font-family:"Kanit";font-weight:500;font-size:13px;white-space:nowrap}
+  td.wk{text-align:center;font-family:"Kanit";font-weight:600;color:var(--navy);background:#f7fafd;width:46px}
+  .tbl-cell-input{border:none;padding:4px;background:transparent;font-size:14px}
+  .tbl-cell-input:focus{box-shadow:none;background:#f0fbfa}
+  td .clo-mini{font-family:"Kanit";font-size:11px;color:var(--teal)}
+  .hours-note{font-size:12.5px;color:var(--muted);margin:10px 0 0;font-family:"Kanit"}
+  /* ---- Assessment ---- */
+  .assess-row{display:grid;grid-template-columns:1fr 130px 90px;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed var(--line)}
+  .assess-row:last-of-type{border:none}
+  .assess-head{font-family:"Kanit";font-size:12px;color:var(--muted);font-weight:500}
+  .w-total{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:11px 15px;border-radius:10px;background:#f7fafd;font-family:"Kanit"}
+  .w-total b{font-size:20px;color:var(--navy)}
+  .w-total .ok{color:var(--teal)} .w-total .bad{color:var(--orange)}
+  /* ---- buttons ---- */
+  .actions{position:sticky;bottom:0;background:rgba(244,247,251,.92);backdrop-filter:blur(8px);
+    border-top:1px solid var(--line);padding:14px 18px;margin:0 -18px -80px;display:flex;gap:11px;justify-content:flex-end;flex-wrap:wrap}
+  .btn{font-family:"Kanit";font-weight:500;font-size:15px;border:none;border-radius:11px;padding:12px 22px;cursor:pointer;transition:all .14s;display:inline-flex;align-items:center;gap:8px}
+  .btn-primary{background:var(--orange);color:#fff}
+  .btn-primary:hover{background:#e94a1e;transform:translateY(-1px)}
+  .btn-ghost{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--navy)}
+  /* ---- relationship banner ---- */
+  .rel{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#102a44,#1d3a5a);color:#fff;border-radius:var(--radius);padding:16px 20px;margin-bottom:18px}
+  .rel .ic{flex:none;width:42px;height:42px;border-radius:11px;background:rgba(255,255,255,.12);display:grid;place-items:center}
+  .rel b{font-family:"Kanit";font-weight:600}
+  .rel p{margin:3px 0 0;color:#bcd0e6;font-size:13.5px}
+  .rel .flow{margin-left:auto;display:flex;gap:7px;align-items:center;font-family:"Kanit";font-size:12.5px;flex-wrap:wrap}
+  .rel .flow .step{background:rgba(255,255,255,.1);padding:5px 11px;border-radius:8px;white-space:nowrap}
+  .rel .flow .arrow{color:var(--orange);font-weight:700}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--navy);color:#fff;
+    padding:12px 22px;border-radius:11px;font-family:"Kanit";font-size:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:all .25s;z-index:99}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .proto-flag{font-family:"Kanit";font-size:12px;background:#fff4e8;color:#b85a16;border:1px solid #ffd9b0;border-radius:8px;padding:8px 13px;margin-bottom:16px;display:flex;gap:8px;align-items:center}
+  @media(max-width:680px){
+    .assess-row{grid-template-columns:1fr 90px 64px}
+    .rel .flow{display:none}
+    header h1{font-size:22px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <p class="brand-eyebrow">มหาวิทยาลัยการกีฬาแห่งชาติ · วิทยาเขตกรุงเทพ</p>
+    <h1>ระบบสร้าง มคอ.3 รายวิชา</h1>
+    <p>หลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาสื่อสารการกีฬา (ปรับปรุง พ.ศ. 2568) · คณะศิลปศาสตร์</p>
+  </div>
+</header>
+
+<main>
+  <div class="proto-flag">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+    เวอร์ชันตัวอย่าง (3 วิชา) — เลือกวิชาจาก dropdown เพื่อดูว่าระบบดึงคำอธิบาย · CLO · การเชื่อม PLO มาให้อัตโนมัติอย่างไร
+  </div>
+
+  <div class="rel">
+    <div class="ic">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 4 4 5-6"/></svg>
+    </div>
+    <div>
+      <b>มคอ.3 และ มคอ.5 ใช้โครง CLO→PLO ชุดเดียวกัน</b>
+      <p>กรอกแผนใน มคอ.3 ครั้งเดียว พอจบเทอมเปิดไฟล์เดิมเติมผล → ได้ มคอ.5 ที่ตัวเลขม้วนเข้า PLO อัตโนมัติ</p>
+    </div>
+    <div class="flow">
+      <span class="step">เลือกวิชา</span><span class="arrow">→</span>
+      <span class="step">มคอ.3</span><span class="arrow">→</span>
+      <span class="step">สอนจบ</span><span class="arrow">→</span>
+      <span class="step">มคอ.5</span>
+    </div>
+  </div>
+
+  <!-- Picker -->
+  <div class="card">
+    <div class="card-pad">
+      <div class="picker">
+        <div class="field">
+          <label class="lab" for="courseSel">เลือกรายวิชาที่รับผิดชอบสอน</label>
+          <select id="courseSel">
+            <option value="">— เลือกรายวิชา —</option>
+          </select>
+        </div>
+        <div class="field" style="max-width:200px">
+          <label class="lab" for="termSel">ภาคการศึกษา / ปี</label>
+          <input id="termSel" type="text" placeholder="เช่น 1/2568">
+        </div>
+        <div class="field" style="max-width:240px">
+          <label class="lab" for="teacher">อาจารย์ผู้สอน</label>
+          <input id="teacher" type="text" placeholder="ชื่อ-นามสกุล">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="form">
+    <div class="card"><div class="empty">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+      <b>ยังไม่ได้เลือกวิชา</b>
+      เลือกวิชาด้านบน แล้วระบบจะเติมข้อมูลจากเล่มหลักสูตรให้อัตโนมัติ
+    </div></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ ข้อมูลรายวิชา (ฝังจากเล่ม มคอ.2 2568) ============ */
+const COURSES = [{"code": "นศ 011064", "name_th": "หลักและทฤษฎีการสื่อสาร", "name_en": "Principles and theory of Communication", "credits": 3, "lecture": 3, "lab": 0, "self": 6, "credit_str": "3(3-0-6)", "category": "2. หมวดวิชาเฉพาะ", "group": "2.1 กลุ่มวิชาพื้นฐานวิชาชีพ", "type": "", "desc_th": "แนวคิด ทฤษฎีและแบบจำลองทางการสื่อสาร ประเภทของการสื่อสาร การสื่อสารมวลชน การสื่อสารในยุคดิจิทัล การใช้ภาษาในการสื่อสาร ปัจจัยที่มีอิทธิพลต่อการสื่อสาร และการสื่อสารที่มีประสิทธิภาพ", "desc_en": "Definition, importance, elements, concepts, and theories concerning the communication, process, types of communication, mass communication, language of communication, and communication influencing factors.", "clos": [{"no": 1, "text": "มีความรู้ ความเข้าใจเกี่ยวกับแนวความคิดและทฤษฎีการสื่อสาร (Knowledge)"}, {"no": 2, "text": "มีความรู้ความ เข้าใจกระบวนการ ภาษา และอิทธิพลของการสื่อสาร (Knowledge)"}], "year": 1}, {"code": "มศ 051089", "name_th": "พัฒนาทักษะการฟังและการพูดภาษาอังกฤษเพื่องานสื่อสารการกีฬา", "name_en": "English Listening and Speaking Skills Development for Sport Communications", "credits": 3, "lecture": 2, "lab": 2, "self": 5, "credit_str": "3(2-2-5)", "category": "2. หมวดวิชาเฉพาะ", "group": "2.2 วิชาเฉพาะด้าน", "type": "2.2.1 วิชาบังคับ", "desc_th": "ทักษะการฟังและการพูดภาษาอังกฤษ การฝึกฟังบทสนทนา ประกาศ ข่าว และ ข้อความสั้นๆที่มีเนื้อหาไม่ซับซ้อน รวมทั้งความเข้าใจในศัพท์และสำนวนที่พบบ่อยในงานสื่อสารการกีฬา การฝึกสื่อสารและโต้ตอบ การแสดงความคิดเห็นเกี่ยวกับเรื่องต่าง ๆ ซึ่งเป็นที่สนใจ จากข้อความที่ได้ฟัง", "desc_en": "English listening and speaking skills. Practice listening to conversations, announcements, news, and short messages with uncomplicated content. Including understanding of vocabulary and expressions commonly encountered in Sport Communications.", "clos": [{"no": 1, "text": "สามารถพูด โต้ตอบสนทนาและแสดงความคิดเป็นภาษาอังกฤษได้"}, {"no": 2, "text": "สามารถฟังและเข้าใจประกาศ ข่าวเป็นภาษาอังกฤษที่เนื้อหาไม่ซับซ้อนได้"}, {"no": 3, "text": "แสดงความคิดเห็นเกี่ยวกับเรื่องต่าง ๆ ซึ่งเป็นที่สนใจ จากข้อความที่ได้ฟังได้"}], "year": 1}, {"code": "นศ 062025", "name_th": "การถ่ายภาพกีฬา", "name_en": "Sport Photography", "credits": 3, "lecture": 2, "lab": 2, "self": 5, "credit_str": "3(2-2-5)", "category": "2. หมวดวิชาเฉพาะ", "group": "2.2 วิชาเฉพาะด้าน", "type": "กลุ่มวิชาด้านการสื่อสาร", "desc_th": "หลักและเทคนิคในการถ่ายภาพกีฬา การจัดองค์ประกอบภาพ การปรับแต่งภาพ ฝึกปฏิบัติการถ่ายภาพการแข่งขันกีฬา กิจกรรมทางการกีฬา และแฟชั่นทางการกีฬาทั้งภายในและภายนอกห้องสตูดิโอ", "desc_en": "Study principles and techniques in sport photography, photography composition, editing and practice sport photography, sport events, in and out studio sport fashion photography.", "clos": [{"no": 1, "text": "มีความรู้ความเข้าใจองค์ประกอบภาพ แสง สี การจัดวางองค์ประกอบภาพ การจัดท่าทางของบุคคล"}, {"no": 2, "text": "มีความรู้ความเข้าใจกระบวนการถ่ายภาพ วางแผนการถ่ายภาพกีฬา (Knowledge)"}, {"no": 3, "text": "สามารถจัดวางองค์ประกอบภาพ การจัดวางไฟ และจัดการไฟล์ภาพ สร้างผลงานภาพถ่ายกีฬาได้ (Skill)"}], "year": 2}];
+
+/* ============ นิยาม PLO ============ */
+const PLO = {
+  1:{name:"ความรู้",         desc:"ประยุกต์องค์ความรู้การสื่อสาร/จัดการ/นวัตกรรม ด้านกีฬา"},
+  2:{name:"ทักษะภาษาอังกฤษ",  desc:"ฟัง พูด อ่าน เขียน ภาษาอังกฤษเพื่อปฏิบัติงาน"},
+  3:{name:"ทักษะผลิตสื่อ",    desc:"สร้างสรรค์เนื้อหา ผลิตสื่อ วางแผนโครงการสื่อสาร"},
+  4:{name:"จริยธรรม",        desc:"รู้เท่าทันสื่อ จรรยาบรรณ รับผิดชอบต่อสังคม"}
+};
+/* YLO รายชั้นปี → PLO (จากตาราง 9) */
+const YEAR_PLO = {1:[1,2,4], 2:[1,2,3,4], 3:[2,3,4], 4:[2,3,4]};
+
+/* ============ Logic เติม PLO อัตโนมัติต่อ CLO ============ */
+function autoPLO(cloText, course){
+  const t = cloText, name = course.name_th + " " + course.desc_th;
+  const isEng = /ภาษาอังกฤษ|English/i.test(name);
+  const set = new Set();
+  // 1) จากแท็กท้าย CLO
+  if(/\(Knowledge\)/i.test(t)) set.add(1);
+  if(/\(Skill/i.test(t))      set.add(isEng?2:3);
+  if(/\(Character\)/i.test(t))set.add(4);
+  if(/\(Ethic/i.test(t))      set.add(4);
+  // 2) ถ้ายังว่าง เดาจากคำสำคัญ
+  if(set.size===0){
+    if(isEng || /ฟัง|พูด|อ่าน|เขียน|สนทนา|โต้ตอบ/.test(t) && isEng) set.add(2);
+    else if(/ผลิต|สร้างสรรค์|ออกแบบ|ถ่ายภาพ|ตัดต่อ|ผลิตสื่อ|วางแผน.*โครงการ/.test(t)) set.add(3);
+    else if(/จริยธรรม|จรรยาบรรณ|รู้เท่าทัน|รับผิดชอบ|วิเคราะห์สื่อ|ตรวจสอบ/.test(t)) set.add(4);
+    else if(/พูด|โต้ตอบ|สนทนา|ฟัง/.test(t) && isEng) set.add(2);
+    else set.add(1);
+  }
+  // 3) วิชาภาษาอังกฤษ: ทุก CLO ค้ำ PLO2 เป็นหลัก
+  if(isEng) set.add(2);
+  // 4) sanity: ตัด PLO ที่ไม่อยู่ในชั้นปีออก (ถ้ามีตัวอื่นเหลือ)
+  const allow = YEAR_PLO[course.year] || [1,2,3,4];
+  const filtered = [...set].filter(p=>allow.includes(p));
+  return (filtered.length? filtered : [...set]).sort();
+}
+
+/* ============ Render ============ */
+const $ = s=>document.querySelector(s);
+const sel = $("#courseSel");
+COURSES.forEach((c,i)=>{
+  const o=document.createElement("option");
+  o.value=i; o.textContent=`${c.code}  ${c.name_th}`;
+  sel.appendChild(o);
+});
+
+let STATE={}; // เก็บการแก้ไขของผู้ใช้ต่อวิชา
+
+sel.addEventListener("change",()=>{
+  const i=sel.value;
+  if(i==="") { renderEmpty(); return; }
+  render(COURSES[+i]);
+});
+
+function renderEmpty(){
+  $("#form").innerHTML=`<div class="card"><div class="empty">
+    <svg width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h8M8 15h5"/></svg>
+    <b>ยังไม่ได้เลือกวิชา</b>เลือกวิชาด้านบน แล้วระบบจะเติมข้อมูลจากเล่มหลักสูตรให้อัตโนมัติ</div></div>`;
+}
+
+function esc(s){return (s||"").replace(/[&<>"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+
+function render(c){
+  // โหลด state เดิม (ถ้ามี)
+  const saved = loadState(c.code);
+  const weeks = saved.weeks || defaultWeeks(c);
+  const assess = saved.assess || defaultAssess(c);
+  const ploMap = saved.ploMap || c.clos.map(clo=>autoPLO(clo.text,c));
+
+  const hoursPerWeek = (c.lecture + c.lab);
+  const cloPloChips = c.clos.map((clo,ci)=>{
+    const on = ploMap[ci];
+    const chips = [1,2,3,4].map(p=>
+      `<span class="chip p${p}" data-p="${p}" data-ci="${ci}" data-on="${on.includes(p)?1:0}">PLO${p}</span>`
+    ).join("");
+    return `<div class="clo-row">
+      <span class="clo-tag">CLO ${clo.no}</span>
+      <div class="clo-body">
+        <div class="clo-text">${esc(clo.text)}</div>
+        <div class="plo-chips"><span class="hint">ค้ำ PLO:</span>${chips}</div>
+      </div></div>`;
+  }).join("");
+
+  const cloOptions = c.clos.map(clo=>`CLO${clo.no}`).join(", ");
+  const weekRows = weeks.map((w,wi)=>`<tr>
+      <td class="wk">${wi+1}</td>
+      <td><input class="tbl-cell-input wkTopic" data-w="${wi}" value="${esc(w.topic)}" placeholder="หัวข้อ/เนื้อหา"></td>
+      <td style="width:90px"><input class="tbl-cell-input wkHours" data-w="${wi}" value="${esc(w.hours)}" placeholder="${hoursPerWeek}"></td>
+      <td style="width:150px"><input class="tbl-cell-input wkActivity" data-w="${wi}" value="${esc(w.activity)}" placeholder="กิจกรรม/วิธีสอน"></td>
+      <td style="width:80px"><input class="tbl-cell-input wkClo" data-w="${wi}" value="${esc(w.clo)}" placeholder="${cloOptions}"></td>
+    </tr>`).join("");
+
+  const assessRows = assess.map((a,ai)=>`<div class="assess-row" data-ai="${ai}">
+      <input class="aName" value="${esc(a.name)}" placeholder="วิธีประเมิน (เช่น สอบกลางภาค)">
+      <input class="aClo" value="${esc(a.clo)}" placeholder="CLO ที่วัด">
+      <input class="aW" type="number" value="${a.w}" min="0" max="100" style="text-align:center">
+    </div>`).join("");
+
+  $("#form").innerHTML = `
+  <!-- หมวด 1 -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">1</div><h3>ข้อมูลทั่วไป</h3><span class="auto">ดึงอัตโนมัติ</span></div>
+    <div class="card-pad">
+      <div class="grid">
+        <div class="cell"><div class="k">รหัสวิชา</div><div class="v big">${esc(c.code)}</div></div>
+        <div class="cell"><div class="k">หน่วยกิต</div><div class="v big">${esc(c.credit_str)}</div></div>
+        <div class="cell"><div class="k">ชั้นปี</div><div class="v big">ปี ${c.year||"-"}</div></div>
+        <div class="cell"><div class="k">ทฤษฎี-ปฏิบัติ-ศึกษาเอง</div><div class="v">${c.lecture}-${c.lab}-${c.self} ชม./สัปดาห์</div></div>
+      </div>
+      <div class="grid" style="margin-top:1px;grid-template-columns:1fr">
+        <div class="cell"><div class="k">ชื่อรายวิชา</div><div class="v">${esc(c.name_th)} · <span style="color:var(--muted);font-weight:400">${esc(c.name_en)}</span></div></div>
+      </div>
+      <div class="grid" style="margin-top:1px">
+        <div class="cell"><div class="k">หมวด</div><div class="v" style="font-size:14px">${esc(c.category)}</div></div>
+        <div class="cell"><div class="k">กลุ่มวิชา</div><div class="v" style="font-size:14px">${esc(c.group)}${c.type?" · "+esc(c.type):""}</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- หมวด 3 (คำอธิบาย) -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">3</div><h3>ลักษณะและการดำเนินการ — คำอธิบายรายวิชา</h3><span class="auto">ดึงอัตโนมัติ</span></div>
+    <div class="card-pad">
+      <div class="desc-box">${esc(c.desc_th)}
+        <div class="en">${esc(c.desc_en)}</div></div>
+      <p class="hours-note">จำนวนชั่วโมงรวม: บรรยาย ${c.lecture*15} ชม. · ปฏิบัติ ${c.lab*15} ชม. · ศึกษาด้วยตนเอง ${c.self*15} ชม. ต่อภาคการศึกษา</p>
+    </div>
+  </div>
+
+  <!-- หมวด 4 (CLO→PLO) -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">4</div><h3>ผลลัพธ์การเรียนรู้ (CLO) และการเชื่อมโยง PLO</h3><span class="auto">เติม PLO อัตโนมัติ · แก้ได้</span></div>
+    <div class="card-pad">
+      ${cloPloChips}
+      <div class="plo-legend">
+        <span><i class="dot p1"></i>PLO1 ${PLO[1].name}</span>
+        <span><i class="dot p2"></i>PLO2 ${PLO[2].name}</span>
+        <span><i class="dot p3"></i>PLO3 ${PLO[3].name}</span>
+        <span><i class="dot p4"></i>PLO4 ${PLO[4].name}</span>
+      </div>
+      <p class="hours-note">แตะที่ชิป PLO เพื่อเปิด/ปิดการเชื่อมโยง — ค่าตั้งต้นมาจากชั้นปี (YLO) + แท็กใน CLO</p>
+    </div>
+  </div>
+
+  <!-- หมวด 5 (แผน 15 สัปดาห์) -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">5</div><h3>แผนการสอน 15 สัปดาห์</h3><span class="auto fill">อาจารย์กรอก</span></div>
+    <div class="card-pad" style="overflow-x:auto">
+      <table>
+        <thead><tr><th>สัปดาห์</th><th>หัวข้อ/เนื้อหา</th><th>ชม.</th><th>กิจกรรม/วิธีสอน</th><th>CLO</th></tr></thead>
+        <tbody id="weekBody">${weekRows}</tbody>
+      </table>
+      <p class="hours-note">ระบบใส่ชั่วโมงตั้งต้น ${hoursPerWeek} ชม./สัปดาห์ ให้แล้ว — เติมหัวข้อแต่ละสัปดาห์ และระบุ CLO ที่ครอบคลุม</p>
+    </div>
+  </div>
+
+  <!-- หมวด 6 (ประเมิน) -->
+  <div class="card">
+    <div class="sec-head"><div class="sec-num">6</div><h3>การวัดและประเมินผล (น้ำหนัก %)</h3><span class="auto fill">อาจารย์กรอก</span></div>
+    <div class="card-pad">
+      <div class="assess-row assess-head"><div>วิธีการประเมิน</div><div>CLO ที่วัด</div><div style="text-align:center">น้ำหนัก%</div></div>
+      <div id="assessBody">${assessRows}</div>
+      <button class="btn btn-ghost" id="addAssess" style="margin-top:12px;font-size:13px;padding:8px 16px">+ เพิ่มรายการประเมิน</button>
+      <div class="w-total"><span>น้ำหนักรวม</span><b id="wTotal">0%</b></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-ghost" id="btnSave">บันทึกร่าง</button>
+    <button class="btn btn-primary" id="btnDownload">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+      ดาวน์โหลด มคอ.3 (Word)
+    </button>
+  </div>`;
+
+  // ---- events ----
+  bindChips(c, ploMap);
+  bindInputs(c);
+  $("#addAssess").addEventListener("click",()=>{
+    const d=document.createElement("div"); d.className="assess-row";
+    d.innerHTML=`<input class="aName" placeholder="วิธีประเมิน"><input class="aClo" placeholder="CLO ที่วัด"><input class="aW" type="number" value="0" min="0" max="100" style="text-align:center">`;
+    $("#assessBody").appendChild(d); bindInputs(c); recalcTotal();
+  });
+  $("#btnSave").addEventListener("click",()=>{ saveState(c); toast("บันทึกร่างแล้ว"); });
+  $("#btnDownload").addEventListener("click",()=>downloadDraft(c));
+  recalcTotal();
+}
+
+function bindChips(c, ploMap){
+  document.querySelectorAll(".chip").forEach(ch=>{
+    ch.addEventListener("click",()=>{
+      const ci=+ch.dataset.ci, p=+ch.dataset.p;
+      const on=ch.getAttribute("data-on")==="1";
+      ch.setAttribute("data-on", on?"0":"1");
+      const arr=ploMap[ci];
+      if(on){ ploMap[ci]=arr.filter(x=>x!==p); } else if(!arr.includes(p)){ arr.push(p); arr.sort(); }
+    });
+  });
+}
+function bindInputs(c){
+  document.querySelectorAll(".aW").forEach(i=>i.addEventListener("input",recalcTotal));
+}
+function recalcTotal(){
+  let t=0; document.querySelectorAll(".aW").forEach(i=>t+=(+i.value||0));
+  const el=$("#wTotal"); if(!el)return;
+  el.textContent=t+"%"; el.className = t===100?"ok":(t>100?"bad":"");
+}
+
+/* ---- defaults ---- */
+function defaultWeeks(c){
+  const w=[]; for(let i=0;i<15;i++) w.push({topic:"",hours:String(c.lecture+c.lab),activity:"",clo:""});
+  // ใส่หัวข้อเริ่ม/สอบให้
+  w[0].topic="ปฐมนิเทศ · แนะนำรายวิชาและเกณฑ์ประเมิน";
+  w[7].topic="สอบกลางภาค"; w[7].activity="สอบ";
+  w[14].topic="สอบปลายภาค / นำเสนอผลงาน"; w[14].activity="สอบ/นำเสนอ";
+  return w;
+}
+function defaultAssess(c){
+  const hasLab=c.lab>0;
+  if(hasLab) return [
+    {name:"ชิ้นงาน/ผลงานปฏิบัติ",clo:"CLO3",w:40},
+    {name:"สอบกลางภาค",clo:"CLO1",w:20},
+    {name:"สอบปลายภาค",clo:"CLO1,CLO2",w:30},
+    {name:"จิตพิสัย/การมีส่วนร่วม",clo:"-",w:10},
+  ];
+  return [
+    {name:"สอบกลางภาค",clo:"CLO1",w:30},
+    {name:"สอบปลายภาค",clo:"CLO1,CLO2",w:40},
+    {name:"งานที่มอบหมาย/รายงาน",clo:"CLO2",w:20},
+    {name:"จิตพิสัย/การมีส่วนร่วม",clo:"-",w:10},
+  ];
+}
+
+/* ---- collect current form ---- */
+function collect(c){
+  const weeks=[...document.querySelectorAll("#weekBody tr")].map(tr=>({
+    topic:tr.querySelector(".wkTopic").value,
+    hours:tr.querySelector(".wkHours").value,
+    activity:tr.querySelector(".wkActivity").value,
+    clo:tr.querySelector(".wkClo").value
+  }));
+  const assess=[...document.querySelectorAll("#assessBody .assess-row")].map(r=>({
+    name:r.querySelector(".aName").value, clo:r.querySelector(".aClo").value, w:+r.querySelector(".aW").value||0
+  }));
+  const ploMap=c.clos.map((_,ci)=>{
+    const on=[]; document.querySelectorAll(`.chip[data-ci="${ci}"]`).forEach(ch=>{ if(ch.getAttribute("data-on")==="1") on.push(+ch.dataset.p);});
+    return on;
+  });
+  return {weeks,assess,ploMap,term:$("#termSel").value,teacher:$("#teacher").value};
+}
+
+/* ---- localStorage (try/catch) ---- */
+function saveState(c){
+  try{ localStorage.setItem("tqf3_"+c.code, JSON.stringify(collect(c))); }catch(e){ STATE[c.code]=collect(c); }
+}
+function loadState(code){
+  try{ const s=localStorage.getItem("tqf3_"+code); if(s) return JSON.parse(s); }catch(e){}
+  return STATE[code]||{};
+}
+
+/* ---- ดาวน์โหลดร่าง (เวอร์ชันต้นแบบ: ส่งออกเป็นไฟล์ .doc อ่านได้ใน Word) ---- */
+function downloadDraft(c){
+  const d=collect(c);
+  const ploMap=d.ploMap;
+  const cloRows=c.clos.map((clo,ci)=>`<tr><td>CLO ${clo.no}</td><td>${esc(clo.text)}</td><td>${(ploMap[ci]||[]).map(p=>"PLO"+p).join(", ")||"-"}</td></tr>`).join("");
+  const weekRows=d.weeks.map((w,i)=>`<tr><td style="text-align:center">${i+1}</td><td>${esc(w.topic)}</td><td style="text-align:center">${esc(w.hours)}</td><td>${esc(w.activity)}</td><td style="text-align:center">${esc(w.clo)}</td></tr>`).join("");
+  const aRows=d.assess.map(a=>`<tr><td>${esc(a.name)}</td><td style="text-align:center">${esc(a.clo)}</td><td style="text-align:center">${a.w}%</td></tr>`).join("");
+  const html=`<html xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8">
+  <style>body{font-family:"TH SarabunPSK","Sarabun";font-size:16pt}h2{font-size:18pt;color:#13283F}
+  table{border-collapse:collapse;width:100%;font-size:15pt}td,th{border:1px solid #333;padding:5px 8px}th{background:#13283F;color:#fff}</style></head><body>
+  <p style="text-align:center"><b>รายละเอียดของรายวิชา (มคอ.3)</b><br>หลักสูตรศิลปศาสตรบัณฑิต สาขาวิชาสื่อสารการกีฬา</p>
+  <h2>หมวดที่ 1 ข้อมูลทั่วไป</h2>
+  <p>รหัสและชื่อรายวิชา: ${esc(c.code)} ${esc(c.name_th)} (${esc(c.name_en)})<br>
+  จำนวนหน่วยกิต: ${esc(c.credit_str)} · ชั้นปีที่ ${c.year} · ${esc(c.group)}<br>
+  ภาคการศึกษา: ${esc(d.term||"-")} · อาจารย์ผู้สอน: ${esc(d.teacher||"-")}</p>
+  <h2>หมวดที่ 3 คำอธิบายรายวิชา</h2><p>${esc(c.desc_th)}</p>
+  <h2>หมวดที่ 4 ผลลัพธ์การเรียนรู้ (CLO → PLO)</h2>
+  <table><tr><th>CLO</th><th>รายละเอียด</th><th>PLO ที่ค้ำ</th></tr>${cloRows}</table>
+  <h2>หมวดที่ 5 แผนการสอน</h2>
+  <table><tr><th>สัปดาห์</th><th>หัวข้อ</th><th>ชม.</th><th>กิจกรรม</th><th>CLO</th></tr>${weekRows}</table>
+  <h2>หมวดที่ 6 การประเมินผล</h2>
+  <table><tr><th>วิธีประเมิน</th><th>CLO</th><th>น้ำหนัก</th></tr>${aRows}</table>
+  </body></html>`;
+  const blob=new Blob(["\ufeff"+html],{type:"application/msword"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download=`มคอ3_${c.code.replace(/\s/g,"")}.doc`;
+  a.click(); URL.revokeObjectURL(a.href);
+  toast("ดาวน์โหลดร่าง มคอ.3 แล้ว");
+}
+
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  setTimeout(()=>t.classList.remove("show"),2200);
+}
+</script>
+</body>
+</html>
